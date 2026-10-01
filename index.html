@@ -1,202 +1,752 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WEAZEL NEWS - Los Santos Portal</title>
-    <!-- Tailwind CSS (zajišťuje moderní vzhled) -->
+    <title>WEAZEL NEWS - Los Santos</title>
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fonty z Google Fonts -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#DC2626',
+                            darkred: '#991B1B',
+                            gold: '#F59E0B',
+                            dark: '#0A0A0A',
+                            card: '#121212',
+                            border: '#262626'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Oswald', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #0d0d0d;
-            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #E5E5E5;
         }
-        h1, h2, h3, h4, .font-heading {
+        .font-heading {
             font-family: 'Oswald', sans-serif;
         }
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #121212;
+            background: #0a0a0a;
         }
         ::-webkit-scrollbar-thumb {
+            background: #262626;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
             background: #dc2626;
+        }
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background-color: #991b1b;
+            padding-left: 100%;
+            box-sizing: content-box;
+        }
+        .ticker {
+            display: inline-block;
+            white-space: nowrap;
+            padding-right: 100%;
+            box-sizing: content-box;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+            animation-name: ticker;
+            animation-duration: 30s;
+        }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-red-600 selection:text-white">
 
-    <!-- Horní Lišta (Live Ticker) -->
-    <div class="bg-red-700 text-white text-xs font-bold uppercase tracking-wider py-1.5 px-4 flex items-center justify-between border-b border-red-800 shadow-lg">
-        <div class="flex items-center space-x-2 overflow-hidden">
-            <span class="bg-black text-red-500 px-2 py-0.5 text-[10px] rounded animate-pulse font-mono tracking-widest font-black">LIVE</span>
-            <span class="truncate">WEAZEL NEWS: INFORMUJEME O DOBRÝCH I ŠPATNÝCH ZPRÁVÁCH • LOS SANTOS & BLAINE COUNTY</span>
+    <!-- TOP HEADER / TICKER -->
+    <div class="bg-red-700 text-white text-xs font-bold uppercase tracking-wider overflow-hidden border-b border-red-800 flex items-center">
+        <div class="bg-black px-4 py-2 z-10 flex items-center shrink-0 border-r border-red-800 font-heading text-sm text-yellow-400">
+            <i data-lucide="zap" class="w-4 h-4 mr-1 fill-yellow-400">display</i> BLESKOVKY
+        </div>
+        <div class="ticker-wrap py-2">
+            <div class="ticker text-sm font-semibold tracking-wide">
+                <span class="mx-4">• Vláda schválila nové rozpočtové škrty pro LSPD</span>
+                <span class="mx-4">• Pozor na bouřky v oblasti Blaine County</span>
+                <span class="mx-4">• Weazel News hledá nové redaktory a kameramany - přihlaste se ještě dnes!</span>
+                <span class="mx-4">• Ceny nemovitostí v Rockford Hills trhají nové rekordy</span>
+            </div>
         </div>
     </div>
 
-    <!-- Hlavní Záhlaví s Logem -->
-    <header class="bg-black border-b-4 border-red-600 py-6 px-4 shadow-2xl">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            
-            <div class="flex items-center select-none">
-                <span class="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase font-heading">
-                    WEAZEL
-                </span>
-                <div class="bg-[#8b0000] text-white text-4xl md:text-6xl font-black px-3 py-1 ml-1.5 transform -rotate-1 shadow-xl tracking-tight uppercase font-heading">
-                    NEWS
+    <!-- MAIN NAVBAR -->
+    <header class="bg-black/90 backdrop-blur-md sticky top-0 z-40 border-b border-neutral-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- LOGO -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="closeDetail()">
+                    <div class="bg-red-600 text-white font-black text-2xl p-2 tracking-tighter rounded-sm transform -skew-x-6 border-2 border-white shadow-lg">
+                        WEAZEL
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-heading text-2xl font-bold tracking-widest leading-none text-white">NEWS</span>
+                        <span class="text-[9px] tracking-widest text-neutral-400 uppercase leading-tight">Los Santos & San Andreas</span>
+                    </div>
+                </div>
+
+                <!-- CATEGORY NAVIGATION -->
+                <nav class="hidden md:flex space-x-1" id="category-nav">
+                    <!-- Dynamic rendering -->
+                </nav>
+
+                <!-- ADMIN CONTROLS -->
+                <div class="flex items-center space-x-3">
+                    <button id="create-article-btn" onclick="openCreateModal()" class="hidden bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase px-3 py-2 rounded transition flex items-center space-x-1">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span>Nový článek</span>
+                    </button>
+                    
+                    <div id="admin-status" class="flex items-center space-x-2 bg-neutral-900 border border-neutral-800 rounded px-3 py-1.5 text-xs">
+                        <i id="admin-lock-icon" data-lucide="lock" class="w-3.5 h-3.5 text-neutral-400"></i>
+                        <span id="admin-status-text" class="text-neutral-300 font-medium hidden sm:inline">ADMIN</span>
+                        <button id="admin-login-btn" onclick="openAdminModal()" class="text-red-500 hover:text-red-400 font-bold ml-1 uppercase underline text-[11px]">Přihlásit</button>
+                        <button id="admin-logout-btn" onclick="logoutAdmin()" class="hidden text-neutral-400 hover:text-white font-bold ml-1 uppercase text-[11px]"><i data-lucide="log-out" class="w-3.5 h-3.5"></i></button>
+                    </div>
                 </div>
             </div>
-
-            <div class="text-center md:text-right border-t md:border-t-0 md:border-r border-neutral-800 pt-2 md:pt-0 md:pr-4">
-                <div class="text-xs text-neutral-400 font-mono">LOS SANTOS & BLAINE COUNTY</div>
-                <div class="text-xs text-red-500 font-bold uppercase tracking-wider font-heading">NEJRYCHLEJŠÍ ZPRAVODAJSTVÍ IN-GAME</div>
-            </div>
+        </div>
+        
+        <!-- MOBILE CATEGORY NAVIGATION -->
+        <div class="md:hidden overflow-x-auto whitespace-nowrap px-4 py-2 bg-neutral-950 border-t border-neutral-800 flex space-x-2" id="mobile-category-nav">
+            <!-- Dynamic rendering -->
         </div>
     </header>
 
-    <!-- Navigační Lišta -->
-    <nav class="bg-neutral-900 border-b border-neutral-800 sticky top-0 z-30 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 flex items-center space-x-2 overflow-x-auto py-2.5">
-            <a href="#" class="px-4 py-1.5 text-xs font-bold uppercase bg-red-600 text-white font-heading rounded-sm">Všechno</a>
-            <a href="#" class="px-4 py-1.5 text-xs font-bold uppercase text-neutral-400 hover:text-white font-heading transition">Zločin</a>
-            <a href="#" class="px-4 py-1.5 text-xs font-bold uppercase text-neutral-400 hover:text-white font-heading transition">LEO Složky</a>
-            <a href="#" class="px-4 py-1.5 text-xs font-bold uppercase text-neutral-400 hover:text-white font-heading transition">Byznys</a>
-            <a href="#" class="px-4 py-1.5 text-xs font-bold uppercase text-neutral-400 hover:text-white font-heading transition">Zábava</a>
-        </div>
-    </nav>
-
-    <!-- Hlavní Obsah Stránky -->
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full space-y-8">
-
-        <!-- HLAVNÍ MÍSTNÍ ČLÁNEK (FEATURED) -->
-        <article class="bg-neutral-900 border border-neutral-800 hover:border-red-600/50 transition duration-300 grid grid-cols-1 lg:grid-cols-12 overflow-hidden shadow-2xl rounded-sm">
-            <div class="lg:col-span-7 relative min-h-[280px] bg-black">
-                <img src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800" class="w-full h-full object-cover opacity-90" alt="Obrázek článku">
-                <span class="absolute top-4 left-4 bg-red-600 text-white text-xs font-black uppercase px-3 py-1 tracking-widest font-heading shadow-md">
-                    HLAVNÍ ZPRÁVA
-                </span>
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+        
+        <!-- ARTICLES LIST VIEW -->
+        <div id="articles-view">
+            <!-- HERO / FEATURED ARTICLE -->
+            <div id="hero-container" class="mb-10">
+                <!-- Dynamic Hero -->
             </div>
-            <div class="lg:col-span-5 p-6 flex flex-col justify-between">
-                <div>
-                    <div class="flex items-center space-x-2 text-xs text-red-500 font-mono font-bold uppercase mb-2">
-                        <span>ZLOČIN</span>
-                        <span>•</span>
-                        <span class="text-neutral-400">Dnes</span>
-                    </div>
-                    <h2 class="text-2xl md:text-3xl font-black text-white leading-tight mb-3 font-heading">
-                        STŘELBA A HONIČKA V DOWNTOWN LOS SANTOS!
-                    </h2>
-                    <p class="text-neutral-400 text-sm leading-relaxed mb-4">
-                        Policie LSPD dnes odpoledne zasahovala v oblasti Pillbox Hill. Neznámý pachatel v černém vozidle ujížděl směrem k Vinewood Hills. Zásahové složky prosí obyvatele o zvýšenou opatrnost.
-                    </p>
-                </div>
-                <div class="pt-4 border-t border-neutral-800 text-xs text-neutral-400 font-mono flex justify-between items-center">
-                    <span>Autor: Redakce Weazel News</span>
-                    <span class="text-red-500 font-bold uppercase font-heading">Číst dále &rarr;</span>
+
+            <div class="flex items-center justify-between mb-6 border-b border-neutral-800 pb-3">
+                <h2 id="section-title" class="font-heading text-2xl font-bold uppercase tracking-wider text-white flex items-center">
+                    <span class="w-3 h-6 bg-red-600 inline-block mr-2"></span>
+                    Všechny zprávy
+                </h2>
+                <div class="text-xs text-neutral-400" id="article-count">0 článků</div>
+            </div>
+
+            <!-- GRID OF ARTICLES -->
+            <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamic Grid Items -->
+            </div>
+        </div>
+
+        <!-- ARTICLE DETAIL VIEW (Hidden by default) -->
+        <div id="detail-view" class="hidden max-w-4xl mx-auto bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden shadow-2xl">
+            <div class="p-4 bg-neutral-950 border-b border-neutral-800 flex justify-between items-center">
+                <button onclick="closeDetail()" class="flex items-center space-x-2 text-neutral-400 hover:text-white transition text-sm font-semibold">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span>Zpět na přehled</span>
+                </button>
+                <div class="flex items-center space-x-3">
+                    <button id="detail-delete-btn" onclick="deleteCurrentArticle()" class="hidden bg-red-900/40 hover:bg-red-800 text-red-300 border border-red-700/50 text-xs px-3 py-1.5 rounded transition flex items-center space-x-1">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        <span>Smazat</span>
+                    </button>
+                    <span id="detail-category" class="bg-red-600 text-white font-bold text-xs uppercase px-2.5 py-1 rounded">Kategorie</span>
                 </div>
             </div>
-        </article>
 
-        <!-- SEKCIE OSTATNÍCH ČLÁNKŮ -->
-        <div class="flex items-center justify-between border-b-2 border-red-600 pb-2">
-            <h3 class="text-xl font-black uppercase text-white tracking-wider font-heading">Nejnovější Zprávy</h3>
+            <div class="p-6 md:p-10">
+                <h1 id="detail-title" class="font-heading text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">Název článku</h1>
+                
+                <div id="detail-subtitle-container" class="mb-6">
+                    <p id="detail-subtitle" class="text-lg md:text-xl text-neutral-300 italic border-l-4 border-red-600 pl-4 py-1">Podnadpis článku</p>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between text-xs text-neutral-400 py-3 border-y border-neutral-800 mb-6 gap-2">
+                    <div class="flex items-center space-x-4">
+                        <span class="flex items-center"><i data-lucide="user" class="w-3.5 h-3.5 mr-1 text-red-500"></i> <span id="detail-author">Redakce</span></span>
+                        <span class="flex items-center"><i data-lucide="clock" class="w-3.5 h-3.5 mr-1 text-red-500"></i> <span id="detail-date">Datum</span></span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="flex items-center"><i data-lucide="eye" class="w-3.5 h-3.5 mr-1 text-neutral-500"></i> <span id="detail-views">0 zobrazení</span></span>
+                        <span class="flex items-center"><i data-lucide="heart" class="w-3.5 h-3.5 mr-1 text-red-500"></i> <span id="detail-likes">0 lajků</span></span>
+                    </div>
+                </div>
+
+                <!-- MEDIA DISPLAY (IMAGE OR VIDEO) -->
+                <div id="detail-media-container" class="mb-8 rounded-lg overflow-hidden bg-black border border-neutral-800">
+                    <!-- Image or Video populated via JS -->
+                </div>
+
+                <!-- TEXT CONTENT -->
+                <div id="detail-content" class="text-neutral-200 leading-relaxed space-y-4 text-base md:text-lg whitespace-pre-line">
+                    <!-- Text content -->
+                </div>
+
+                <!-- FOOTER ACTIONS -->
+                <div class="mt-10 pt-6 border-t border-neutral-800 flex justify-between items-center">
+                    <button id="like-btn" onclick="likeCurrentArticle()" class="flex items-center space-x-2 px-6 py-3 font-bold uppercase text-sm transition bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-red-900/40 font-heading">
+                        <i data-lucide="thumbs-up" class="w-4 h-4"></i>
+                        <span id="like-btn-text">Páčí sa mi to</span>
+                    </button>
+
+                    <button onclick="closeDetail()" class="text-neutral-400 hover:text-white text-sm font-semibold">
+                        Zavřít článek
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <!-- MŘÍŽKA S ČLÁNKY (Sem přidáváte další kachličky článků) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            <!-- ČLÁNEK 1 -->
-            <article class="bg-neutral-900 border border-neutral-800 hover:border-red-600/50 transition duration-300 flex flex-col justify-between overflow-hidden rounded-sm">
-                <div>
-                    <div class="relative aspect-video bg-black overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800" class="w-full h-full object-cover" alt="Obrázek">
-                        <span class="absolute top-2 left-2 bg-black/80 text-white text-[10px] font-black uppercase px-2 py-0.5 border-l-2 border-red-600 font-heading">
-                            ZÁBAVA
-                        </span>
-                    </div>
-                    <div class="p-4">
-                        <h4 class="text-lg font-bold text-white leading-snug mb-2 font-heading">
-                            Velká Párty v Tequi-la-la Oznámena na tento víkend!
-                        </h4>
-                        <p class="text-xs text-neutral-400 leading-relaxed">
-                            Přípravy jsou v plném proudu. Očekává se účast známých osobností, soutěže o hodnotné ceny i DJ z celého San Andreas.
-                        </p>
-                    </div>
-                </div>
-                <div class="p-4 pt-0 mt-auto flex justify-between text-[11px] font-mono text-neutral-500 border-t border-neutral-800">
-                    <span>Před 2 hodinami</span>
-                    <span class="text-red-500 font-bold font-heading">WEAZEL NEWS</span>
-                </div>
-            </article>
-
-            <!-- ČLÁNEK 2 -->
-            <article class="bg-neutral-900 border border-neutral-800 hover:border-red-600/50 transition duration-300 flex flex-col justify-between overflow-hidden rounded-sm">
-                <div>
-                    <div class="relative aspect-video bg-black overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800" class="w-full h-full object-cover" alt="Obrázek">
-                        <span class="absolute top-2 left-2 bg-black/80 text-white text-[10px] font-black uppercase px-2 py-0.5 border-l-2 border-red-600 font-heading">
-                            BYZNYS
-                        </span>
-                    </div>
-                    <div class="p-4">
-                        <h4 class="text-lg font-bold text-white leading-snug mb-2 font-heading">
-                            Trh s nemovitostmi v Rockford Hills trhá rekordy
-                        </h4>
-                        <p class="text-xs text-neutral-400 leading-relaxed">
-                            Ceny luxusních vil raketově rostou. Kdo si stihl koupit dům minulý rok, ten dnes při prodeji výrazně ušetří.
-                        </p>
-                    </div>
-                </div>
-                <div class="p-4 pt-0 mt-auto flex justify-between text-[11px] font-mono text-neutral-500 border-t border-neutral-800">
-                    <span>Před 5 hodinami</span>
-                    <span class="text-red-500 font-bold font-heading">WEAZEL NEWS</span>
-                </div>
-            </article>
-
-            <!-- ČLÁNEK 3 -->
-            <article class="bg-neutral-900 border border-neutral-800 hover:border-red-600/50 transition duration-300 flex flex-col justify-between overflow-hidden rounded-sm">
-                <div>
-                    <div class="relative aspect-video bg-black overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=800" class="w-full h-full object-cover" alt="Obrázek">
-                        <span class="absolute top-2 left-2 bg-black/80 text-white text-[10px] font-black uppercase px-2 py-0.5 border-l-2 border-red-600 font-heading">
-                            LEO SLOŽKY
-                        </span>
-                    </div>
-                    <div class="p-4">
-                        <h4 class="text-lg font-bold text-white leading-snug mb-2 font-heading">
-                            Nábor do LSPD a Sheriff Department otevřen!
-                        </h4>
-                        <p class="text-xs text-neutral-400 leading-relaxed">
-                            Bezpečnostní složky hledají nové kadety do svých řad. Splňujete základní podmínky? Podávejte přihlášky na oficiálním portálu.
-                        </p>
-                    </div>
-                </div>
-                <div class="p-4 pt-0 mt-auto flex justify-between text-[11px] font-mono text-neutral-500 border-t border-neutral-800">
-                    <span>Včera</span>
-                    <span class="text-red-500 font-bold font-heading">WEAZEL NEWS</span>
-                </div>
-            </article>
-
-        </div>
     </main>
 
-    <!-- Zápatí / Footer -->
-    <footer class="bg-black border-t-2 border-red-600 py-8 mt-12 text-neutral-500 text-xs font-mono">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-2">
-                <span class="text-xl font-black text-white font-heading">WEAZEL</span>
-                <span class="bg-[#8b0000] text-white text-xl font-black px-2 py-0.5 font-heading">NEWS</span>
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-neutral-900 border border-neutral-800 rounded-lg max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="p-2 bg-red-600/20 border border-red-600/30 rounded text-red-500">
+                    <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h3 class="font-heading text-xl font-bold text-white">Přihlášení Administrátora</h3>
+                    <p class="text-xs text-neutral-400">Pouze pro autorizovaný personál Weazel News</p>
+                </div>
             </div>
-            <p>© WEAZEL NEWS NETWORK. "Confirming good news is bad news."</p>
+
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-neutral-300 uppercase mb-2">Heslo správce</label>
+                    <input type="password" id="admin-password-input" required placeholder="Zadejte admin heslo" class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm">
+                </div>
+                
+                <div id="admin-error" class="hidden text-red-500 text-xs font-semibold">
+                    Neplatné heslo! Zkuste to znovu.
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeAdminModal()" class="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-bold uppercase rounded">Zrušit</button>
+                    <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase rounded">Přihlásit se</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CREATE ARTICLE MODAL -->
+    <div id="create-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-neutral-900 border border-neutral-800 rounded-lg max-w-2xl w-full p-6 shadow-2xl relative my-8">
+            <button onclick="closeCreateModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            
+            <h3 class="font-heading text-2xl font-bold text-white mb-6 border-b border-neutral-800 pb-3 flex items-center">
+                <i data-lucide="file-plus" class="w-6 h-6 mr-2 text-red-600"></i>
+                Vytvořit nový článek
+            </h3>
+
+            <form onsubmit="handleCreateArticle(event)" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-neutral-300 uppercase mb-1">Název článku *</label>
+                        <input type="text" id="form-title" required placeholder="Napište výstižný nadpis..." class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-neutral-300 uppercase mb-1">Kategorie *</label>
+                        <select id="form-category" required class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm">
+                            <option value="Zločin">Zločin</option>
+                            <option value="Politika">Politika</option>
+                            <option value="Doprava">Doprava</option>
+                            <option value="Kultura">Kultura</option>
+                            <option value="Sport">Sport</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-neutral-300 uppercase mb-1">Podnadpis / Krátké shrnutí</label>
+                    <input type="text" id="form-subtitle" placeholder="Stručné shrnutí článku pro náhled..." class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-neutral-300 uppercase mb-1">URL Obrázku</label>
+                        <input type="url" id="form-image" placeholder="https://example.com/image.jpg" class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-neutral-300 uppercase mb-1">URL Videa (YouTube nebo .mp4)</label>
+                        <input type="url" id="form-video" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-neutral-300 uppercase mb-1">Obsah článku *</label>
+                    <textarea id="form-content" required rows="6" placeholder="Napište samotný text článku..." class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm"></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t border-neutral-800">
+                    <button type="button" onclick="closeCreateModal()" class="px-5 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-bold uppercase rounded">Zrušit</button>
+                    <button type="submit" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase rounded flex items-center space-x-1">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                        <span>Publikovat článek</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-neutral-800 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div class="flex items-center space-x-3">
+                <div class="bg-red-600 text-white font-black text-xl p-1.5 tracking-tighter rounded-sm transform -skew-x-6 border border-white">
+                    WEAZEL
+                </div>
+                <span class="font-heading text-xl font-bold tracking-widest text-white">NEWS</span>
+            </div>
+            <p class="text-xs text-neutral-500">
+                &copy; <span id="year"></span> Weazel News Los Santos. Všechna práva vyhrazena. Určeno pro roleplay účely.
+            </p>
         </div>
     </footer>
 
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Default Sample Data
+        const INITIAL_ARTICLES = [
+            {
+                id: '1',
+                title: 'Masivní přestřelka na Vinewood Hills! Policie uzavřela oblast',
+                subtitle: 'Neznámí ozbrojenci napadli konvoj bezpečnostní agentury. Na místě zasahuje SWAT.',
+                category: 'Zločin',
+                author: 'John Doe',
+                timestamp: Date.now() - 3600000 * 2,
+                imageUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1200&q=80',
+                videoUrl: '',
+                content: `Dnes v odpoledních hodinách došlo v luxusní čtvrti Vinewood Hills k rozsáhlé přestřelce. Podle prvotních informací byl terčem útoku konvoj převážející cenný náklad.\n\nSvědci hlásí desítky výstřelů a několik výbuchů. Policie Los Santos (LSPD) ihned neprodyšně uzavřela široké okolí a vyzývá obyvatele, aby nevycházeli ze svých domovů.\n\n"Situace je stále aktivní. Na místě máme speciální jednotky SWAT a vyjednávače," uvedl tiskový mluvčí LSPD. Zda si incident vyžádal oběti na životech, zatím nebylo oficiálně potvrzeno.`,
+                views: 1420,
+                likes: 89
+            },
+            {
+                id: '2',
+                title: 'Starosta představil nový plán na revitalizaci přístavu v South Los Santos',
+                subtitle: 'Investice ve výši 50 milionů dolarů má přinést nová pracovní místa a moderní infrastrukturu.',
+                category: 'Politika',
+                author: 'Sarah Connor',
+                timestamp: Date.now() - 3600000 * 12,
+                imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80',
+                videoUrl: '',
+                content: `Vedení města dnes na tiskové konferenci odhalilo dlouho očekávaný projekt obnovy městského přístavu. Cílem je přeměnit zanedbanou průmyslovou zónu na moderní logistické a obchodní centrum.\n\nProjekt zahrnuje výstavbu nových skladovacích hal, prohloubení plavebního kanálu a vybudování nového bezpečnostního terminálu. Podle starosty by práce měly začít již v příštím měsíci.`,
+                views: 850,
+                likes: 34
+            },
+            {
+                id: '3',
+                title: 'Velká havárie na dálnici Route 68 způsobila kilometry dlouhé kolony',
+                subtitle: 'Srážka cisterny s osobním automobilem zablokovala hlavní tah směrem na Sandy Shores.',
+                category: 'Doprava',
+                author: 'Redakce WEAZEL',
+                timestamp: Date.now() - 3600000 * 24,
+                imageUrl: 'https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?auto=format&fit=crop&w=1200&q=80',
+                videoUrl: '',
+                content: `Ranní špičku v oblasti Blaine County zkomplikovala vážná dopravní nehoda. Na dálnici Route 68 se střetla nákladní cisterna převážející palivo s osobním vozidlem.\n\nHasičský sbor z okresu Los Santos musel zlikvidovat menší únik nafty. Dálnice byla v obou směrech na několik hodin zcela uzavřena. Řidičům se doporučuje využít objízdné trasy přes Senora Freeway.`,
+                views: 620,
+                likes: 12
+            }
+        ];
+
+        const CATEGORIES = ['Vše', 'Zločin', 'Politika', 'Doprava', 'Kultura', 'Sport'];
+        const ADMIN_PASS = 'WeAzEL.neWS2O26';
+
+        // Application State
+        let currentArticles = [];
+        let activeCategory = 'Vše';
+        let isAdmin = false;
+        let currentArticleId = null;
+        let likedInSession = new Set();
+
+        // Initialize App
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('weazel_news_articles');
+            if (saved) {
+                try {
+                    currentArticles = JSON.parse(saved);
+                } catch(e) {
+                    currentArticles = INITIAL_ARTICLES;
+                }
+            } else {
+                currentArticles = INITIAL_ARTICLES;
+                saveToLocalStorage();
+            }
+            renderApp();
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('weazel_news_articles', JSON.stringify(currentArticles));
+        }
+
+        function renderApp() {
+            renderCategories();
+            renderArticles();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function renderCategories() {
+            const nav = document.getElementById('category-nav');
+            const mobileNav = document.getElementById('mobile-category-nav');
+            
+            const createBtn = (cat, isMobile = false) => {
+                const isActive = activeCategory === cat;
+                const activeClasses = isActive 
+                    ? 'bg-red-600 text-white font-bold' 
+                    : 'text-neutral-400 hover:text-white hover:bg-neutral-800';
+                const sizeClasses = isMobile ? 'px-3 py-1 text-xs' : 'px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider';
+                return `<button onclick="filterCategory('${cat}')" class="${sizeClasses} rounded transition ${activeClasses}">${cat}</button>`;
+            };
+
+            nav.innerHTML = CATEGORIES.map(cat => createBtn(cat)).join('');
+            mobileNav.innerHTML = CATEGORIES.map(cat => createBtn(cat, true)).join('');
+        }
+
+        function filterCategory(cat) {
+            activeCategory = cat;
+            closeDetail();
+            renderApp();
+        }
+
+        function renderArticles() {
+            const filtered = activeCategory === 'Vše' 
+                ? currentArticles 
+                : currentArticles.filter(a => a.category === activeCategory);
+
+            document.getElementById('article-count').innerText = `${filtered.length} článků`;
+
+            const heroContainer = document.getElementById('hero-container');
+            const articlesGrid = document.getElementById('articles-grid');
+
+            if (filtered.length === 0) {
+                heroContainer.innerHTML = '';
+                articlesGrid.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-neutral-500 bg-neutral-900/50 rounded border border-neutral-800">
+                        <i data-lucide="newspaper" class="w-12 h-12 mx-auto mb-2 opacity-30"></i>
+                        <p class="text-lg">V této kategorii zatím nejsou žádné články.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Hero section (first article if "Vše" selected or high priority)
+            const hero = filtered[0];
+            const remaining = filtered.slice(1);
+
+            heroContainer.innerHTML = `
+                <div onclick="openArticle('${hero.id}')" class="group cursor-pointer bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-0 hover:border-red-600/50 transition shadow-xl">
+                    <div class="lg:col-span-7 relative min-h-[300px] lg:min-h-[400px] overflow-hidden bg-black">
+                        <img src="${hero.imageUrl || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1200&q=80'}" alt="${hero.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90">
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-red-600 text-white text-xs font-bold uppercase px-3 py-1 rounded shadow">${hero.category}</span>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5 p-6 lg:p-8 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center text-xs text-neutral-400 space-x-3 mb-3">
+                                <span><i data-lucide="clock" class="w-3.5 h-3.5 inline mr-1 text-red-500"></i>${formatDate(hero.timestamp)}</span>
+                                <span><i data-lucide="user" class="w-3.5 h-3.5 inline mr-1 text-red-500"></i>${hero.author}</span>
+                            </div>
+                            <h3 class="font-heading text-2xl lg:text-3xl font-bold text-white group-hover:text-red-500 transition mb-3 leading-tight">${hero.title}</h3>
+                            <p class="text-neutral-400 text-sm line-clamp-3 mb-4">${hero.subtitle || hero.content}</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-neutral-500 pt-4 border-t border-neutral-800">
+                            <div class="flex space-x-3">
+                                <span><i data-lucide="eye" class="w-3.5 h-3.5 inline mr-1"></i>${hero.views || 0}</span>
+                                <span><i data-lucide="heart" class="w-3.5 h-3.5 inline mr-1 text-red-500"></i>${hero.likes || 0}</span>
+                            </div>
+                            <span class="text-red-500 font-bold group-hover:translate-x-1 transition flex items-center">Číst více <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Grid items
+            articlesGrid.innerHTML = remaining.map(article => `
+                <div onclick="openArticle('${article.id}')" class="group cursor-pointer bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden flex flex-col justify-between hover:border-neutral-700 transition">
+                    <div>
+                        <div class="relative h-48 overflow-hidden bg-black">
+                            <img src="${article.imageUrl || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=800&q=80'}" alt="${article.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90">
+                            <span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold uppercase px-2 py-0.5 rounded">${article.category}</span>
+                        </div>
+                        <div class="p-5">
+                            <div class="flex items-center text-[11px] text-neutral-400 space-x-2 mb-2">
+                                <span><i data-lucide="clock" class="w-3 h-3 inline mr-1 text-red-500"></i>${formatDate(article.timestamp)}</span>
+                            </div>
+                            <h4 class="font-heading text-lg font-bold text-white group-hover:text-red-500 transition mb-2 leading-snug line-clamp-2">${article.title}</h4>
+                            <p class="text-neutral-400 text-xs line-clamp-2">${article.subtitle || article.content}</p>
+                        </div>
+                    </div>
+                    <div class="px-5 py-3 bg-neutral-950/50 border-t border-neutral-800/80 flex items-center justify-between text-xs text-neutral-500">
+                        <div class="flex space-x-3">
+                            <span><i data-lucide="eye" class="w-3.5 h-3.5 inline mr-1"></i>${article.views || 0}</span>
+                            <span><i data-lucide="heart" class="w-3.5 h-3.5 inline mr-1 text-red-500"></i>${article.likes || 0}</span>
+                        </div>
+                        <span class="text-neutral-400 group-hover:text-white transition flex items-center text-[11px] font-semibold">Číst <i data-lucide="arrow-right" class="w-3 h-3 ml-1"></i></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function formatDate(ts) {
+            if (!ts) return 'Neznámé datum';
+            const date = new Date(ts);
+            return date.toLocaleDateString('cs-CZ', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function openArticle(id) {
+            const article = currentArticles.find(a => a.id === id);
+            if (!article) return;
+
+            currentArticleId = id;
+            
+            // Increment views
+            article.views = (article.views || 0) + 1;
+            saveToLocalStorage();
+
+            // Populate Detail View
+            document.getElementById('detail-title').innerText = article.title;
+            
+            const subtitleEl = document.getElementById('detail-subtitle');
+            const subtitleContainer = document.getElementById('detail-subtitle-container');
+            if (article.subtitle) {
+                subtitleEl.innerText = article.subtitle;
+                subtitleContainer.classList.remove('hidden');
+            } else {
+                subtitleContainer.classList.add('hidden');
+            }
+
+            document.getElementById('detail-category').innerText = article.category;
+            document.getElementById('detail-author').innerText = article.author || 'Redakce WEAZEL NEWS';
+            document.getElementById('detail-date').innerText = formatDate(article.timestamp);
+            document.getElementById('detail-views').innerText = `${article.views} zobrazení`;
+            document.getElementById('detail-likes').innerText = `${article.likes || 0} lajků`;
+            document.getElementById('detail-content').innerText = article.content;
+
+            // Media Container Setup (Video vs Image)
+            const mediaContainer = document.getElementById('detail-media-container');
+            if (article.videoUrl) {
+                let videoHtml = '';
+                if (article.videoUrl.includes('youtube.com') || article.videoUrl.includes('youtu.be')) {
+                    let embedUrl = article.videoUrl;
+                    if (article.videoUrl.includes('watch?v=')) {
+                        embedUrl = article.videoUrl.replace('watch?v=', 'embed/');
+                    } else if (article.videoUrl.includes('youtu.be/')) {
+                        embedUrl = article.videoUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+                    }
+                    videoHtml = `<div class="aspect-video w-full"><iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allowfullscreen></iframe></div>`;
+                } else {
+                    videoHtml = `<video src="${article.videoUrl}" controls class="w-full max-h-[500px] object-contain"></video>`;
+                }
+                mediaContainer.innerHTML = videoHtml;
+                mediaContainer.classList.remove('hidden');
+            } else if (article.imageUrl) {
+                mediaContainer.innerHTML = `<img src="${article.imageUrl}" alt="${article.title}" class="w-full max-h-[500px] object-cover">`;
+                mediaContainer.classList.remove('hidden');
+            } else {
+                mediaContainer.classList.add('hidden');
+            }
+
+            // Admin Actions visibility
+            const deleteBtn = document.getElementById('detail-delete-btn');
+            if (isAdmin) {
+                deleteBtn.classList.remove('hidden');
+            } else {
+                deleteBtn.classList.add('hidden');
+            }
+
+            // Like Button State
+            const likeBtn = document.getElementById('like-btn');
+            const likeText = document.getElementById('like-btn-text');
+            if (likedInSession.has(id)) {
+                likeBtn.className = "flex items-center space-x-2 px-6 py-3 font-bold uppercase text-sm transition bg-neutral-800 text-green-400 border border-green-500/30 cursor-not-allowed font-heading";
+                likeText.innerText = "Lajkováno!";
+            } else {
+                likeBtn.className = "flex items-center space-x-2 px-6 py-3 font-bold uppercase text-sm transition bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-red-900/40 font-heading";
+                likeText.innerText = "Páčí sa mi to";
+            }
+
+            document.getElementById('articles-view').classList.add('hidden');
+            document.getElementById('detail-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeDetail() {
+            currentArticleId = null;
+            document.getElementById('detail-view').classList.add('hidden');
+            document.getElementById('articles-view').classList.remove('hidden');
+        }
+
+        function likeCurrentArticle() {
+            if (!currentArticleId || likedInSession.has(currentArticleId)) return;
+            const article = currentArticles.find(a => a.id === currentArticleId);
+            if (article) {
+                article.likes = (article.likes || 0) + 1;
+                likedInSession.add(currentArticleId);
+                saveToLocalStorage();
+                document.getElementById('detail-likes').innerText = `${article.likes} lajků`;
+                
+                const likeBtn = document.getElementById('like-btn');
+                const likeText = document.getElementById('like-btn-text');
+                likeBtn.className = "flex items-center space-x-2 px-6 py-3 font-bold uppercase text-sm transition bg-neutral-800 text-green-400 border border-green-500/30 cursor-not-allowed font-heading";
+                likeText.innerText = "Lajkováno!";
+                renderApp();
+            }
+        }
+
+        function deleteCurrentArticle() {
+            if (!currentArticleId) return;
+            deleteArticle(currentArticleId);
+            closeDetail();
+        }
+
+        function deleteArticle(id) {
+            if (confirm('Opravdu chcete tento článek smazat?')) {
+                currentArticles = currentArticles.filter(a => a.id !== id);
+                saveToLocalStorage();
+                renderApp();
+            }
+        }
+
+        function openAdminModal() {
+            document.getElementById('admin-error').classList.add('hidden');
+            document.getElementById('admin-password-input').value = '';
+            document.getElementById('admin-modal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const input = document.getElementById('admin-password-input').value;
+            if (input === ADMIN_PASS) {
+                isAdmin = true;
+                updateAdminUI();
+                closeAdminModal();
+            } else {
+                document.getElementById('admin-error').classList.remove('hidden');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            updateAdminUI();
+        }
+
+        function updateAdminUI() {
+            const logoutBtn = document.getElementById('admin-logout-btn');
+            const createBtn = document.getElementById('create-article-btn');
+            const lockIcon = document.getElementById('admin-lock-icon');
+            const statusText = document.getElementById('admin-status-text');
+
+            if (isAdmin) {
+                statusText.innerText = 'ADMIN PŘIHLÁŠEN';
+                lockIcon.setAttribute('data-lucide', 'unlock');
+                logoutBtn.classList.remove('hidden');
+                createBtn.classList.remove('hidden');
+                createBtn.classList.add('flex');
+            } else {
+                statusText.innerText = 'ADMIN PŘIHLÁŠENÍ';
+                lockIcon.setAttribute('data-lucide', 'lock');
+                logoutBtn.classList.add('hidden');
+                createBtn.classList.add('hidden');
+                createBtn.classList.remove('flex');
+            }
+
+            if (currentArticleId) {
+                const deleteBtn = document.getElementById('detail-delete-btn');
+                if (isAdmin) deleteBtn.classList.remove('hidden');
+                else deleteBtn.classList.add('hidden');
+            }
+
+            renderApp();
+        }
+
+        function openCreateModal() {
+            document.getElementById('create-modal').classList.remove('hidden');
+        }
+
+        function closeCreateModal() {
+            document.getElementById('create-modal').classList.add('hidden');
+        }
+
+        function handleCreateArticle(e) {
+            e.preventDefault();
+            const title = document.getElementById('form-title').value;
+            const category = document.getElementById('form-category').value;
+            const subtitle = document.getElementById('form-subtitle').value;
+            const imageUrl = document.getElementById('form-image').value;
+            const videoUrl = document.getElementById('form-video').value;
+            const content = document.getElementById('form-content').value;
+
+            const newArticle = {
+                id: Date.now().toString(),
+                title,
+                category,
+                subtitle,
+                imageUrl,
+                videoUrl,
+                content,
+                author: 'Redakce WEAZEL NEWS',
+                timestamp: Date.now(),
+                views: 0,
+                likes: 0
+            };
+
+            currentArticles.unshift(newArticle);
+            saveToLocalStorage();
+            closeCreateModal();
+            
+            // Reset formuláře
+            e.target.reset();
+            renderApp();
+        }
+
+        // Inicializace při načtení stránky
+        document.getElementById('year').innerText = new Date().getFullYear();
+        loadFromLocalStorage();
+    </script>
 </body>
 </html>
