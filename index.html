@@ -1,535 +1,545 @@
 <!DOCTYPE html>
-<html lang="cs" class="dark">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WEAZEL NEWS - Los Santos</title>
-    
-    <!-- Tailwind CSS CDN -->
+    <title>WEAZEL NEWS - Los Santos Portal</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            red: '#DC2626',
-                            darkred: '#991B1B',
-                            gold: '#F59E0B',
-                            dark: '#0A0A0A',
-                            card: '#121212',
-                            border: '#262626'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        heading: ['Oswald', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
-    
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #050505;
-            color: #E5E5E5;
+            font-family: 'Roboto', sans-serif;
+            background-color: #0a0a0a;
+            color: #f3f4f6;
         }
-        .font-heading {
+        h1, h2, h3, h4, .font-heading {
             font-family: 'Oswald', sans-serif;
         }
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #0a0a0a;
+            background: #121212;
         }
         ::-webkit-scrollbar-thumb {
-            background: #262626;
-            border-radius: 4px;
+            background: #b91c1c;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #dc2626;
-        }
-        .ticker-wrap {
-            width: 100%;
-            overflow: hidden;
-            background-color: #991b1b;
-            padding-left: 100%;
-            box-sizing: content-box;
-        }
-        .ticker {
-            display: inline-block;
-            white-space: nowrap;
-            padding-right: 100%;
-            box-sizing: content-box;
-            animation-iteration-count: infinite;
-            animation-timing-function: linear;
-            animation-name: ticker;
-            animation-duration: 30s;
-        }
-        @keyframes ticker {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-red-600 selection:text-white">
 
-    <!-- TOP HEADER / TICKER -->
-    <div class="bg-red-700 text-white text-xs font-bold uppercase tracking-wider overflow-hidden border-b border-red-800 flex items-center">
-        <div class="bg-black px-4 py-2 z-10 flex items-center shrink-0 border-r border-red-800 font-heading text-sm text-yellow-400">
-            <i data-lucide="zap" class="w-4 h-4 mr-1 fill-yellow-400">display</i> BLESKOVKY
+    <!-- Breaking News Ticker / Admin Status -->
+    <div class="bg-red-700 text-white text-xs font-bold uppercase tracking-wider py-1.5 px-4 flex flex-wrap items-center justify-between border-b border-red-800 shadow-lg">
+        <div class="flex items-center space-x-2 overflow-hidden my-0.5">
+            <span class="bg-black text-red-500 px-2 py-0.5 text-[10px] rounded animate-pulse font-mono tracking-widest font-black">LIVE</span>
+            <span class="truncate">WEAZEL NEWS: INFORMUJEME O DOBRÝCH I ŠPATNÝCH ZPRÁVÁCH • LOS SANTOS & NOVINKY</span>
         </div>
-        <div class="ticker-wrap py-2">
-            <div class="ticker text-sm font-semibold tracking-wide">
-                <span class="mx-4">• Vláda schválila nové rozpočtové škrty pro LSPD</span>
-                <span class="mx-4">• Pozor na bouřky v oblasti Blaine County</span>
-                <span class="mx-4">• Weazel News hledá nové redaktory a kameramany - přihlaste se ještě dnes!</span>
-                <span class="mx-4">• Ceny nemovitostí v Rockford Hills trhají nové rekordy</span>
-            </div>
+        <div class="flex items-center space-x-4 ml-auto my-0.5 text-[11px]">
+            <button id="admin-login-btn" onclick="openAdminModal()" class="flex items-center space-x-1 hover:text-neutral-200 transition">
+                <i data-lucide="lock" class="w-3.5 h-3.5" id="admin-lock-icon"></i>
+                <span id="admin-status-text">ADMIN PŘIHLÁŠENÍ</span>
+            </button>
+            <button id="admin-logout-btn" onclick="logoutAdmin()" class="hidden text-neutral-300 hover:text-white flex items-center space-x-1" title="Odhlásit admina">
+                <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            </button>
         </div>
     </div>
 
-    <!-- MAIN NAVBAR -->
-    <header class="bg-black/90 backdrop-blur-md sticky top-0 z-40 border-b border-neutral-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                
-                <!-- LOGO -->
-                <div class="flex items-center space-x-3 cursor-pointer" onclick="closeDetail()">
-                    <div class="bg-red-600 text-white font-black text-2xl p-2 tracking-tighter rounded-sm transform -skew-x-6 border-2 border-white shadow-lg">
-                        WEAZEL
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-heading text-2xl font-bold tracking-widest leading-none text-white">NEWS</span>
-                        <span class="text-[9px] tracking-widest text-neutral-400 uppercase leading-tight">Los Santos & San Andreas</span>
-                    </div>
-                </div>
-
-                <!-- CATEGORY NAVIGATION -->
-                <nav class="hidden md:flex space-x-1" id="category-nav">
-                    <!-- Dynamic rendering -->
-                </nav>
-
-                <!-- ADMIN CONTROLS -->
-                <div class="flex items-center space-x-3">
-                    <button id="create-article-btn" onclick="openCreateModal()" class="hidden bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase px-3 py-2 rounded transition flex items-center space-x-1">
-                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                        <span>Nový článek</span>
-                    </button>
-                    
-                    <div id="admin-status" class="flex items-center space-x-2 bg-neutral-900 border border-neutral-800 rounded px-3 py-1.5 text-xs">
-                        <i id="admin-lock-icon" data-lucide="lock" class="w-3.5 h-3.5 text-neutral-400"></i>
-                        <span id="admin-status-text" class="text-neutral-300 font-medium hidden sm:inline">ADMIN</span>
-                        <button id="admin-login-btn" onclick="openAdminModal()" class="text-red-500 hover:text-red-400 font-bold ml-1 uppercase underline text-[11px]">Přihlásit</button>
-                        <button id="admin-logout-btn" onclick="logoutAdmin()" class="hidden text-neutral-400 hover:text-white font-bold ml-1 uppercase text-[11px]"><i data-lucide="log-out" class="w-3.5 h-3.5"></i></button>
-                    </div>
+    <!-- Main Header -->
+    <header class="bg-black border-b-4 border-red-600 py-6 px-4 shadow-2xl">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- WEAZEL NEWS LOGO -->
+            <div onclick="resetFilter()" class="cursor-pointer flex items-center select-none group">
+                <span class="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase font-heading">
+                    WEAZEL
+                </span>
+                <div class="bg-[#8b0000] text-white text-4xl md:text-6xl font-black px-3 py-1 ml-1.5 transform -rotate-1 group-hover:rotate-0 transition duration-200 shadow-xl tracking-tight uppercase font-heading">
+                    NEWS
                 </div>
             </div>
-        </div>
-        
-        <!-- MOBILE CATEGORY NAVIGATION -->
-        <div class="md:hidden overflow-x-auto whitespace-nowrap px-4 py-2 bg-neutral-950 border-t border-neutral-800 flex space-x-2" id="mobile-category-nav">
-            <!-- Dynamic rendering -->
+
+            <!-- Slogan & Admin Action -->
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden lg:block border-r border-neutral-800 pr-4">
+                    <div class="text-xs text-neutral-400 font-mono">LOS SANTOS & BLAINE COUNTY</div>
+                    <div class="text-xs text-red-500 font-bold uppercase tracking-wider font-heading">NEJRYCHLEJŠÍ ZPRAVODAJSTVÍ</div>
+                </div>
+
+                <button id="create-article-btn" onclick="openCreateModal()" class="hidden bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-5 rounded-none items-center space-x-2 shadow-lg hover:shadow-red-900/50 transition border-l-4 border-white uppercase text-xs tracking-wider font-heading">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Vydat Nový Článek</span>
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- MAIN CONTENT CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
-        
-        <!-- ARTICLES LIST VIEW -->
-        <div id="articles-view">
-            <!-- HERO / FEATURED ARTICLE -->
-            <div id="hero-container" class="mb-10">
-                <!-- Dynamic Hero -->
-            </div>
+    <!-- Category Navigation & Search Bar -->
+    <nav class="bg-neutral-900 border-b border-neutral-800 sticky top-0 z-30 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between py-2 gap-2">
+            <div class="flex items-center space-x-1 overflow-x-auto w-full md:w-auto py-1" id="category-bar"></div>
 
-            <div class="flex items-center justify-between mb-6 border-b border-neutral-800 pb-3">
-                <h2 id="section-title" class="font-heading text-2xl font-bold uppercase tracking-wider text-white flex items-center">
-                    <span class="w-3 h-6 bg-red-600 inline-block mr-2"></span>
-                    Všechny zprávy
-                </h2>
-                <div class="text-xs text-neutral-400" id="article-count">0 článků</div>
-            </div>
-
-            <!-- GRID OF ARTICLES -->
-            <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Dynamic Grid Items -->
+            <div class="relative w-full md:w-64">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-neutral-500"></i>
+                <input
+                    type="text"
+                    id="search-input"
+                    oninput="handleSearch()"
+                    placeholder="Hledat ve zprávách..."
+                    class="bg-neutral-950 text-neutral-200 text-xs pl-9 pr-4 py-2 border border-neutral-800 focus:outline-none focus:border-red-600 w-full"
+                />
             </div>
         </div>
+    </nav>
 
-        <!-- ARTICLE DETAIL VIEW (Hidden by default) -->
-        <div id="detail-view" class="hidden max-w-4xl mx-auto bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden shadow-2xl">
-            <div class="p-4 bg-neutral-950 border-b border-neutral-800 flex justify-between items-center">
-                <button onclick="closeDetail()" class="flex items-center space-x-2 text-neutral-400 hover:text-white transition text-sm font-semibold">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                    <span>Zpět na přehled</span>
-                </button>
-                <div class="flex items-center space-x-3">
-                    <button id="detail-delete-btn" onclick="deleteCurrentArticle()" class="hidden bg-red-900/40 hover:bg-red-800 text-red-300 border border-red-700/50 text-xs px-3 py-1.5 rounded transition flex items-center space-x-1">
-                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                        <span>Smazat</span>
-                    </button>
-                    <span id="detail-category" class="bg-red-600 text-white font-bold text-xs uppercase px-2.5 py-1 rounded">Kategorie</span>
-                </div>
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
+        <!-- Article List View -->
+        <div id="articles-view" class="space-y-8">
+            <div id="featured-article-container"></div>
+
+            <div class="flex items-center justify-between border-b-2 border-red-600 pb-2">
+                <h3 class="text-xl font-black uppercase text-white tracking-wider font-heading" id="grid-title">Všechny Zprávy</h3>
+                <span class="text-xs font-mono text-neutral-500 uppercase" id="article-count">0 článků</span>
             </div>
 
-            <div class="p-6 md:p-10">
-                <h1 id="detail-title" class="font-heading text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">Název článku</h1>
-                
-                <div id="detail-subtitle-container" class="mb-6">
-                    <p id="detail-subtitle" class="text-lg md:text-xl text-neutral-300 italic border-l-4 border-red-600 pl-4 py-1">Podnadpis článku</p>
-                </div>
+            <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
 
-                <div class="flex flex-wrap items-center justify-between text-xs text-neutral-400 py-3 border-y border-neutral-800 mb-6 gap-2">
-                    <div class="flex items-center space-x-4">
-                        <span class="flex items-center"><i data-lucide="user" class="w-3.5 h-3.5 mr-1 text-red-500"></i> <span id="detail-author">Redakce</span></span>
-                        <span class="flex items-center"><i data-lucide="clock" class="w-3.5 h-3.5 mr-1 text-red-500"></i> <span id="detail-date">Datum</span></span>
+        <!-- Article Detail View -->
+        <div id="detail-view" class="hidden">
+            <article class="bg-neutral-900 border border-neutral-800 p-6 md:p-8 shadow-2xl max-w-4xl mx-auto">
+                <button onclick="closeDetail()" class="mb-6 text-xs text-red-500 hover:text-red-400 font-bold uppercase tracking-wider flex items-center space-x-1 font-heading">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span>Zpět na přehled zpráv</span>
+                </button>
+
+                <div class="flex items-center justify-between mb-3">
+                    <span id="detail-category" class="bg-red-600 text-white text-[11px] font-black uppercase px-2.5 py-1 tracking-widest font-heading">
+                        ZPRÁVY
+                    </span>
+                    <div class="flex items-center space-x-4 text-xs text-neutral-400 font-mono">
+                        <span class="flex items-center space-x-1">
+                            <i data-lucide="eye" class="w-3.5 h-3.5 text-neutral-500"></i>
+                            <span id="detail-views">0 zobrazení</span>
+                        </span>
+                        <span class="flex items-center space-x-1">
+                            <i data-lucide="thumbs-up" class="w-3.5 h-3.5 text-neutral-500"></i>
+                            <span id="detail-likes">0 lajků</span>
+                        </span>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <span class="flex items-center"><i data-lucide="eye" class="w-3.5 h-3.5 mr-1 text-neutral-500"></i> <span id="detail-views">0 zobrazení</span></span>
-                        <span class="flex items-center"><i data-lucide="heart" class="w-3.5 h-3.5 mr-1 text-red-500"></i> <span id="detail-likes">0 lajků</span></span>
-                    </div>
                 </div>
 
-                <!-- MEDIA DISPLAY (IMAGE OR VIDEO) -->
-                <div id="detail-media-container" class="mb-8 rounded-lg overflow-hidden bg-black border border-neutral-800">
-                    <!-- Image or Video populated via JS -->
+                <h1 id="detail-title" class="text-3xl md:text-5xl font-black text-white mb-4 leading-tight font-heading">
+                    Název článku
+                </h1>
+
+                <p id="detail-subtitle" class="text-lg md:text-xl text-neutral-300 italic mb-6 border-l-2 border-red-600 pl-4 py-1">
+                    Podtitulek
+                </p>
+
+                <div id="detail-media-container" class="my-6"></div>
+
+                <div class="flex items-center justify-between text-xs text-neutral-500 border-y border-neutral-800 py-3 my-6 font-mono">
+                    <span>Autor: <strong id="detail-author" class="text-neutral-300">Redakce WEAZEL NEWS</strong></span>
+                    <span>Publikováno: <span id="detail-date">Nedávno</span></span>
                 </div>
 
-                <!-- TEXT CONTENT -->
-                <div id="detail-content" class="text-neutral-200 leading-relaxed space-y-4 text-base md:text-lg whitespace-pre-line">
-                    <!-- Text content -->
+                <div id="detail-content" class="text-neutral-200 leading-relaxed text-base md:text-lg whitespace-pre-wrap font-sans my-8">
+                    Obsah...
                 </div>
 
-                <!-- FOOTER ACTIONS -->
-                <div class="mt-10 pt-6 border-t border-neutral-800 flex justify-between items-center">
+                <div class="flex items-center justify-between border-t border-neutral-800 pt-6 mt-8">
                     <button id="like-btn" onclick="likeCurrentArticle()" class="flex items-center space-x-2 px-6 py-3 font-bold uppercase text-sm transition bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-red-900/40 font-heading">
                         <i data-lucide="thumbs-up" class="w-4 h-4"></i>
                         <span id="like-btn-text">Páčí sa mi to</span>
                     </button>
 
-                    <button onclick="closeDetail()" class="text-neutral-400 hover:text-white text-sm font-semibold">
-                        Zavřít článek
+                    <button id="detail-delete-btn" onclick="deleteCurrentArticle()" class="hidden bg-neutral-800 hover:bg-red-950 text-red-500 hover:text-red-400 px-4 py-3 font-bold text-xs uppercase flex items-center space-x-2 border border-red-900/50 transition font-heading">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        <span>Smazat Článek</span>
                     </button>
                 </div>
-            </div>
+            </article>
         </div>
-
     </main>
 
-    <!-- ADMIN LOGIN MODAL -->
-    <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-neutral-900 border border-neutral-800 rounded-lg max-w-md w-full p-6 shadow-2xl relative">
+    <!-- Admin Login Modal -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-neutral-900 border-2 border-red-600 w-full max-w-md p-6 relative shadow-2xl">
             <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-white">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
-            
+
             <div class="flex items-center space-x-3 mb-6">
-                <div class="p-2 bg-red-600/20 border border-red-600/30 rounded text-red-500">
-                    <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                <div class="bg-red-600 p-2 text-white">
+                    <i data-lucide="lock" class="w-6 h-6"></i>
                 </div>
                 <div>
-                    <h3 class="font-heading text-xl font-bold text-white">Přihlášení Administrátora</h3>
-                    <p class="text-xs text-neutral-400">Pouze pro autorizovaný personál Weazel News</p>
+                    <h3 class="text-lg font-black uppercase text-white font-heading">ADMINISTRÁTORSKÝ PŘÍSTUP</h3>
+                    <p class="text-xs text-neutral-400">Pouze oprávnění redaktoři WEAZEL NEWS</p>
                 </div>
             </div>
 
             <form onsubmit="handleAdminLogin(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-neutral-300 uppercase mb-2">Heslo správce</label>
-                    <input type="password" id="admin-password-input" required placeholder="Zadejte admin heslo" class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm">
-                </div>
-                
-                <div id="admin-error" class="hidden text-red-500 text-xs font-semibold">
-                    Neplatné heslo! Zkuste to znovu.
+                <div id="admin-error" class="hidden bg-red-950/80 border border-red-600 text-red-200 text-xs p-3 flex items-center space-x-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 text-red-500"></i>
+                    <span id="admin-error-text">Nesprávné heslo</span>
                 </div>
 
-                <div class="flex justify-end space-x-2 pt-2">
-                    <button type="button" onclick="closeAdminModal()" class="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-bold uppercase rounded">Zrušit</button>
-                    <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase rounded">Přihlásit se</button>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-neutral-300 mb-1 font-heading">Heslo Redaktora / PIN</label>
+                    <input
+                        type="password"
+                        id="admin-password-input"
+                        placeholder="Zadejte heslo..."
+                        class="w-full bg-neutral-950 border border-neutral-700 text-white p-3 text-sm focus:outline-none focus:border-red-600"
+                        required
+                    />
                 </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 uppercase text-sm tracking-wider transition shadow-lg font-heading"
+                >
+                    Ověřit a Přihlásit
+                </button>
             </form>
         </div>
     </div>
 
-    <!-- CREATE ARTICLE MODAL -->
-    <div id="create-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-neutral-900 border border-neutral-800 rounded-lg max-w-2xl w-full p-6 shadow-2xl relative my-8">
+    <!-- Create Article Modal -->
+    <div id="create-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto hidden">
+        <div class="bg-neutral-900 border-2 border-red-600 w-full max-w-2xl p-6 my-8 relative shadow-2xl">
             <button onclick="closeCreateModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-white">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
-            
-            <h3 class="font-heading text-2xl font-bold text-white mb-6 border-b border-neutral-800 pb-3 flex items-center">
-                <i data-lucide="file-plus" class="w-6 h-6 mr-2 text-red-600"></i>
-                Vytvořit nový článek
+
+            <h3 class="text-xl font-black uppercase text-white mb-1 flex items-center space-x-2 font-heading">
+                <i data-lucide="newspaper" class="w-6 h-6 text-red-600"></i>
+                <span>Publikovat Nový Článek</span>
             </h3>
+            <p class="text-xs text-neutral-400 mb-6">Vyplňte podrobnosti o novém zpravodajském článku pro WEAZEL NEWS.</p>
 
             <form onsubmit="handleCreateArticle(event)" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-semibold text-neutral-300 uppercase mb-1">Název článku *</label>
-                        <input type="text" id="form-title" required placeholder="Napište výstižný nadpis..." class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-neutral-300 uppercase mb-1">Kategorie *</label>
-                        <select id="form-category" required class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm">
-                            <option value="Zločin">Zločin</option>
-                            <option value="Politika">Politika</option>
-                            <option value="Doprava">Doprava</option>
-                            <option value="Kultura">Kultura</option>
-                            <option value="Sport">Sport</option>
-                        </select>
-                    </div>
-                </div>
-
                 <div>
-                    <label class="block text-xs font-semibold text-neutral-300 uppercase mb-1">Podnadpis / Krátké shrnutí</label>
-                    <input type="text" id="form-subtitle" placeholder="Stručné shrnutí článku pro náhled..." class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm">
+                    <label class="block text-xs font-bold uppercase text-neutral-300 mb-1 font-heading">Hlavní Titulek *</label>
+                    <input
+                        type="text"
+                        id="form-title"
+                        required
+                        placeholder="např. Přepadení banky v Pacific Standard!"
+                        class="w-full bg-neutral-950 border border-neutral-700 text-white p-2.5 text-sm focus:outline-none focus:border-red-600"
+                    />
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-neutral-300 uppercase mb-1">URL Obrázku</label>
-                        <input type="url" id="form-image" placeholder="https://example.com/image.jpg" class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm">
+                        <label class="block text-xs font-bold uppercase text-neutral-300 mb-1 font-heading">Kategorie</label>
+                        <select
+                            id="form-category"
+                            class="w-full bg-neutral-950 border border-neutral-700 text-white p-2.5 text-sm focus:outline-none focus:border-red-600"
+                        >
+                            <option value="SMRTONOSNÉ ZPRÁVY">SMRTONOSNÉ ZPRÁVY</option>
+                            <option value="LEO SLOŽKY">LEO SLOŽKY</option>
+                            <option value="ZLOČIN">ZLOČIN</option>
+                            <option value="ZÁBAVA">ZÁBAVA</option>
+                            <option value="BYZNYS">BYZNYS</option>
+                            <option value="SPORT">SPORT</option>
+                        </select>
                     </div>
+
                     <div>
-                        <label class="block text-xs font-semibold text-neutral-300 uppercase mb-1">URL Videa (YouTube nebo .mp4)</label>
-                        <input type="url" id="form-video" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm">
+                        <label class="block text-xs font-bold uppercase text-neutral-300 mb-1 font-heading">Podtitulek / Slogan</label>
+                        <input
+                            type="text"
+                            id="form-subtitle"
+                            placeholder="Krátké shrnutí v jedné věte..."
+                            class="w-full bg-neutral-950 border border-neutral-700 text-white p-2.5 text-sm focus:outline-none focus:border-red-600"
+                        />
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-neutral-300 uppercase mb-1">Obsah článku *</label>
-                    <textarea id="form-content" required rows="6" placeholder="Napište samotný text článku..." class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white focus:outline-none focus:border-red-600 text-sm"></textarea>
+                    <label class="block text-xs font-bold uppercase text-neutral-300 mb-1 font-heading">URL Obrázku (Volitelné)</label>
+                    <input
+                        type="url"
+                        id="form-image"
+                        placeholder="https://images.unsplash.com/... nebo jakýkoliv odkaz"
+                        class="w-full bg-neutral-950 border border-neutral-700 text-white p-2.5 text-sm focus:outline-none focus:border-red-600"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-neutral-300 mb-1 font-heading">URL Videa (YouTube nebo MP4 link)</label>
+                    <input
+                        type="url"
+                        id="form-video"
+                        placeholder="https://www.youtube.com/watch?v=... nebo video.mp4"
+                        class="w-full bg-neutral-950 border border-neutral-700 text-white p-2.5 text-sm focus:outline-none focus:border-red-600"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-neutral-300 mb-1 font-heading">Obsah Článku *</label>
+                    <textarea
+                        id="form-content"
+                        required
+                        rows="6"
+                        placeholder="Napište kompletní reportáž..."
+                        class="w-full bg-neutral-950 border border-neutral-700 text-white p-2.5 text-sm focus:outline-none focus:border-red-600"
+                    ></textarea>
                 </div>
 
                 <div class="flex justify-end space-x-3 pt-4 border-t border-neutral-800">
-                    <button type="button" onclick="closeCreateModal()" class="px-5 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-bold uppercase rounded">Zrušit</button>
-                    <button type="submit" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase rounded flex items-center space-x-1">
-                        <i data-lucide="send" class="w-4 h-4"></i>
-                        <span>Publikovat článek</span>
+                    <button
+                        type="button"
+                        onclick="closeCreateModal()"
+                        class="px-5 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold uppercase text-xs font-heading"
+                    >
+                        Zrušit
+                    </button>
+                    <button
+                        type="submit"
+                        class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold uppercase text-xs tracking-wider shadow-lg font-heading"
+                    >
+                        Vydat Článek
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="bg-black border-t border-neutral-800 py-8 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div class="flex items-center space-x-3">
-                <div class="bg-red-600 text-white font-black text-xl p-1.5 tracking-tighter rounded-sm transform -skew-x-6 border border-white">
-                    WEAZEL
-                </div>
-                <span class="font-heading text-xl font-bold tracking-widest text-white">NEWS</span>
+    <!-- Footer -->
+    <footer class="bg-black border-t-2 border-red-600 py-8 mt-12 text-neutral-500 text-xs font-mono">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="text-xl font-black text-white font-heading">WEAZEL</span>
+                <span class="bg-[#8b0000] text-white text-xl font-black px-2 py-0.5 font-heading">NEWS</span>
             </div>
-            <p class="text-xs text-neutral-500">
-                &copy; <span id="year"></span> Weazel News Los Santos. Všechna práva vyhrazena. Určeno pro roleplay účely.
+            <p class="text-center md:text-left">
+                © <span id="year"></span> WEAZEL NEWS NETWORK. "Confirming good news is bad news."
             </p>
+            <div class="flex items-center space-x-4">
+                <button onclick="openAdminModal()" class="hover:text-red-500 underline">
+                    Redakční systém
+                </button>
+            </div>
         </div>
     </footer>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- Main Logic Script -->
     <script>
-        // Default Sample Data
-        const INITIAL_ARTICLES = [
-            {
-                id: '1',
-                title: 'Masivní přestřelka na Vinewood Hills! Policie uzavřela oblast',
-                subtitle: 'Neznámí ozbrojenci napadli konvoj bezpečnostní agentury. Na místě zasahuje SWAT.',
-                category: 'Zločin',
-                author: 'John Doe',
-                timestamp: Date.now() - 3600000 * 2,
-                imageUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1200&q=80',
-                videoUrl: '',
-                content: `Dnes v odpoledních hodinách došlo v luxusní čtvrti Vinewood Hills k rozsáhlé přestřelce. Podle prvotních informací byl terčem útoku konvoj převážející cenný náklad.\n\nSvědci hlásí desítky výstřelů a několik výbuchů. Policie Los Santos (LSPD) ihned neprodyšně uzavřela široké okolí a vyzývá obyvatele, aby nevycházeli ze svých domovů.\n\n"Situace je stále aktivní. Na místě máme speciální jednotky SWAT a vyjednávače," uvedl tiskový mluvčí LSPD. Zda si incident vyžádal oběti na životech, zatím nebylo oficiálně potvrzeno.`,
-                views: 1420,
-                likes: 89
-            },
-            {
-                id: '2',
-                title: 'Starosta představil nový plán na revitalizaci přístavu v South Los Santos',
-                subtitle: 'Investice ve výši 50 milionů dolarů má přinést nová pracovní místa a moderní infrastrukturu.',
-                category: 'Politika',
-                author: 'Sarah Connor',
-                timestamp: Date.now() - 3600000 * 12,
-                imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80',
-                videoUrl: '',
-                content: `Vedení města dnes na tiskové konferenci odhalilo dlouho očekávaný projekt obnovy městského přístavu. Cílem je přeměnit zanedbanou průmyslovou zónu na moderní logistické a obchodní centrum.\n\nProjekt zahrnuje výstavbu nových skladovacích hal, prohloubení plavebního kanálu a vybudování nového bezpečnostního terminálu. Podle starosty by práce měly začít již v příštím měsíci.`,
-                views: 850,
-                likes: 34
-            },
-            {
-                id: '3',
-                title: 'Velká havárie na dálnici Route 68 způsobila kilometry dlouhé kolony',
-                subtitle: 'Srážka cisterny s osobním automobilem zablokovala hlavní tah směrem na Sandy Shores.',
-                category: 'Doprava',
-                author: 'Redakce WEAZEL',
-                timestamp: Date.now() - 3600000 * 24,
-                imageUrl: 'https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?auto=format&fit=crop&w=1200&q=80',
-                videoUrl: '',
-                content: `Ranní špičku v oblasti Blaine County zkomplikovala vážná dopravní nehoda. Na dálnici Route 68 se střetla nákladní cisterna převážející palivo s osobním vozidlem.\n\nHasičský sbor z okresu Los Santos musel zlikvidovat menší únik nafty. Dálnice byla v obou směrech na několik hodin zcela uzavřena. Řidičům se doporučuje využít objízdné trasy přes Senora Freeway.`,
-                views: 620,
-                likes: 12
-            }
-        ];
-
-        const CATEGORIES = ['Vše', 'Zločin', 'Politika', 'Doprava', 'Kultura', 'Sport'];
         const ADMIN_PASS = 'WeAzEL.neWS2O26';
-
-        // Application State
-        let currentArticles = [];
-        let activeCategory = 'Vše';
         let isAdmin = false;
+        let currentArticles = [];
+        let activeCategory = 'VŠECHNO';
+        let searchQuery = '';
         let currentArticleId = null;
         let likedInSession = new Set();
 
-        // Initialize App
+        const categories = ['VŠECHNO', 'SMRTONOSNÉ ZPRÁVY', 'LEO SLOŽKY', 'ZLOČIN', 'ZÁBAVA', 'BYZNYS', 'SPORT'];
+
+        const demoArticles = [];
+
         function loadFromLocalStorage() {
-            const saved = localStorage.getItem('weazel_news_articles');
+            const saved = localStorage.getItem('weazel_articles');
             if (saved) {
                 try {
                     currentArticles = JSON.parse(saved);
-                } catch(e) {
-                    currentArticles = INITIAL_ARTICLES;
+                    // Odstranění prázdných/poškozených článků z paměti
+                    currentArticles = currentArticles.filter(art => art && art.title);
+                } catch (e) {
+                    currentArticles = demoArticles;
                 }
             } else {
-                currentArticles = INITIAL_ARTICLES;
+                currentArticles = demoArticles;
                 saveToLocalStorage();
             }
             renderApp();
         }
 
         function saveToLocalStorage() {
-            localStorage.setItem('weazel_news_articles', JSON.stringify(currentArticles));
+            localStorage.setItem('weazel_articles', JSON.stringify(currentArticles));
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('category-bar');
+            container.innerHTML = categories.map(cat => `
+                <button
+                    onclick="selectCategory('${cat}')"
+                    class="px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider transition font-heading shrink-0 ${
+                        activeCategory === cat
+                            ? 'bg-red-600 text-white'
+                            : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+                    }"
+                >
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function renderVideoPlayer(url) {
+            if (!url) return '';
+            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+            if (ytMatch && ytMatch[1]) {
+                return `
+                    <div class="aspect-video w-full bg-black border border-neutral-800">
+                        <iframe
+                            src="https://www.youtube.com/embed/${ytMatch[1]}?autoplay=0"
+                            class="w-full h-full border-0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                        ></iframe>
+                    </div>
+                `;
+            }
+            return `
+                <div class="aspect-video w-full bg-black border border-neutral-800">
+                    <video controls class="w-full h-full object-contain">
+                        <source src="${url}" type="video/mp4">
+                        Váš prohlížeč nepodporuje přehrávání videa.
+                    </video>
+                </div>
+            `;
         }
 
         function renderApp() {
             renderCategories();
-            renderArticles();
+
+            const filtered = currentArticles.filter(art => {
+                if (!art || !art.title) return false;
+                const matchesCat = activeCategory === 'VŠECHNO' || art.category === activeCategory;
+                const matchesSearch = !searchQuery || 
+                    art.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    (art.content && art.content.toLowerCase().includes(searchQuery.toLowerCase()));
+                return matchesCat && matchesSearch;
+            });
+
+            document.getElementById('article-count').innerText = `${filtered.length} článků`;
+
+            const featuredContainer = document.getElementById('featured-article-container');
+            const gridContainer = document.getElementById('articles-grid');
+
+            if (filtered.length === 0) {
+                featuredContainer.innerHTML = '';
+                gridContainer.innerHTML = `
+                    <div class="col-span-full text-center py-16 bg-neutral-900 border border-neutral-800">
+                        <i data-lucide="shield-alert" class="w-12 h-12 text-red-600 mx-auto mb-3"></i>
+                        <h3 class="text-lg font-bold text-white uppercase font-heading">Žádné články nenalezeny</h3>
+                        <p class="text-sm text-neutral-400">V této kategorii nebyly vydány žádné zprávy.</p>
+                    </div>
+                `;
+                if (window.lucide) lucide.createIcons();
+                return;
+            }
+
+            const featured = (activeCategory === 'VŠECHNO' && !searchQuery) ? filtered[0] : null;
+            const listArticles = featured ? filtered.slice(1) : filtered;
+
+            if (featured) {
+                featuredContainer.innerHTML = `
+                    <div onclick="openArticle('${featured.id}')" class="bg-neutral-900 border border-neutral-800 hover:border-red-600/50 transition cursor-pointer grid grid-cols-1 lg:grid-cols-12 overflow-hidden group mb-8">
+                        <div class="lg:col-span-7 relative min-h-[280px] bg-black overflow-hidden">
+                            <img src="${featured.imageUrl || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90 group-hover:opacity-100" />
+                            <span class="absolute top-4 left-4 bg-red-600 text-white text-xs font-black uppercase px-3 py-1 tracking-widest font-heading">
+                                HLAVNÍ ZPRÁVA
+                            </span>
+                        </div>
+                        <div class="lg:col-span-5 p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center space-x-2 text-xs text-red-500 font-mono font-bold uppercase mb-2">
+                                    <span>${featured.category || 'ZPRÁVY'}</span>
+                                    <span>•</span>
+                                    <span class="text-neutral-400">${new Date(featured.timestamp || Date.now()).toLocaleDateString('cs-CZ')}</span>
+                                </div>
+                                <h2 class="text-2xl md:text-3xl font-black text-white group-hover:text-red-500 transition leading-tight mb-3 font-heading">
+                                    ${featured.title || 'Bez názvu'}
+                                </h2>
+                                <p class="text-neutral-400 text-sm line-clamp-3 mb-4 italic">
+                                    ${featured.subtitle || featured.content || ''}
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-neutral-800 text-xs text-neutral-400 font-mono">
+                                <div class="flex items-center space-x-4">
+                                    <span><i data-lucide="eye" class="w-3.5 h-3.5 inline mr-1 text-neutral-500"></i>${featured.views || 0}</span>
+                                    <span><i data-lucide="thumbs-up" class="w-3.5 h-3.5 inline mr-1 text-neutral-500"></i>${featured.likes || 0}</span>
+                                </div>
+                                <span class="text-red-500 font-bold uppercase flex items-center group-hover:translate-x-1 transition font-heading">
+                                    Číst dále <i data-lucide="chevron-right" class="w-4 h-4 ml-0.5"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                featuredContainer.innerHTML = '';
+            }
+
+            gridContainer.innerHTML = listArticles.map(art => `
+                <div onclick="openArticle('${art.id}')" class="bg-neutral-900 border border-neutral-800 hover:border-red-600/50 transition cursor-pointer flex flex-col justify-between group overflow-hidden">
+                    <div>
+                        <div class="relative aspect-video bg-black overflow-hidden">
+                            <img src="${art.imageUrl || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300 opacity-90 group-hover:opacity-100" />
+                            <span class="absolute top-2 left-2 bg-black/80 text-white text-[10px] font-black uppercase px-2 py-0.5 border-l-2 border-red-600 font-heading">
+                                ${art.category || 'Zprávy'}
+                            </span>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="text-lg font-bold text-white group-hover:text-red-500 transition line-clamp-2 leading-snug mb-2 font-heading">
+                                ${art.title || 'Bez názvu'}
+                            </h4>
+                            <p class="text-xs text-neutral-400 line-clamp-2 leading-relaxed mb-4">
+                                ${art.subtitle || art.content || ''}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0 mt-auto flex items-center justify-between text-[11px] font-mono text-neutral-500 border-t border-neutral-800/60">
+                        <div class="flex items-center space-x-3">
+                            <span><i data-lucide="eye" class="w-3 h-3 inline mr-1 text-neutral-600"></i>${art.views || 0}</span>
+                            <span><i data-lucide="thumbs-up" class="w-3 h-3 inline mr-1 text-neutral-600"></i>${art.likes || 0}</span>
+                        </div>
+                        ${isAdmin ? `
+                            <button onclick="event.stopPropagation(); deleteArticle('${art.id}')" class="text-neutral-500 hover:text-red-500 p-1" title="Smazat článek">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                        ` : ''}
+                        <span class="text-red-500 font-bold group-hover:underline font-heading">ČÍST</span>
+                    </div>
+                </div>
+            `).join('');
+
             if (window.lucide) lucide.createIcons();
         }
 
-        function renderCategories() {
-            const nav = document.getElementById('category-nav');
-            const mobileNav = document.getElementById('mobile-category-nav');
-            
-            const createBtn = (cat, isMobile = false) => {
-                const isActive = activeCategory === cat;
-                const activeClasses = isActive 
-                    ? 'bg-red-600 text-white font-bold' 
-                    : 'text-neutral-400 hover:text-white hover:bg-neutral-800';
-                const sizeClasses = isMobile ? 'px-3 py-1 text-xs' : 'px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider';
-                return `<button onclick="filterCategory('${cat}')" class="${sizeClasses} rounded transition ${activeClasses}">${cat}</button>`;
-            };
-
-            nav.innerHTML = CATEGORIES.map(cat => createBtn(cat)).join('');
-            mobileNav.innerHTML = CATEGORIES.map(cat => createBtn(cat, true)).join('');
-        }
-
-        function filterCategory(cat) {
+        function selectCategory(cat) {
             activeCategory = cat;
             closeDetail();
             renderApp();
         }
 
-        function renderArticles() {
-            const filtered = activeCategory === 'Vše' 
-                ? currentArticles 
-                : currentArticles.filter(a => a.category === activeCategory);
-
-            document.getElementById('article-count').innerText = `${filtered.length} článků`;
-
-            const heroContainer = document.getElementById('hero-container');
-            const articlesGrid = document.getElementById('articles-grid');
-
-            if (filtered.length === 0) {
-                heroContainer.innerHTML = '';
-                articlesGrid.innerHTML = `
-                    <div class="col-span-full text-center py-12 text-neutral-500 bg-neutral-900/50 rounded border border-neutral-800">
-                        <i data-lucide="newspaper" class="w-12 h-12 mx-auto mb-2 opacity-30"></i>
-                        <p class="text-lg">V této kategorii zatím nejsou žádné články.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Hero section (first article if "Vše" selected or high priority)
-            const hero = filtered[0];
-            const remaining = filtered.slice(1);
-
-            heroContainer.innerHTML = `
-                <div onclick="openArticle('${hero.id}')" class="group cursor-pointer bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-0 hover:border-red-600/50 transition shadow-xl">
-                    <div class="lg:col-span-7 relative min-h-[300px] lg:min-h-[400px] overflow-hidden bg-black">
-                        <img src="${hero.imageUrl || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1200&q=80'}" alt="${hero.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90">
-                        <div class="absolute top-4 left-4">
-                            <span class="bg-red-600 text-white text-xs font-bold uppercase px-3 py-1 rounded shadow">${hero.category}</span>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-5 p-6 lg:p-8 flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center text-xs text-neutral-400 space-x-3 mb-3">
-                                <span><i data-lucide="clock" class="w-3.5 h-3.5 inline mr-1 text-red-500"></i>${formatDate(hero.timestamp)}</span>
-                                <span><i data-lucide="user" class="w-3.5 h-3.5 inline mr-1 text-red-500"></i>${hero.author}</span>
-                            </div>
-                            <h3 class="font-heading text-2xl lg:text-3xl font-bold text-white group-hover:text-red-500 transition mb-3 leading-tight">${hero.title}</h3>
-                            <p class="text-neutral-400 text-sm line-clamp-3 mb-4">${hero.subtitle || hero.content}</p>
-                        </div>
-                        <div class="flex items-center justify-between text-xs text-neutral-500 pt-4 border-t border-neutral-800">
-                            <div class="flex space-x-3">
-                                <span><i data-lucide="eye" class="w-3.5 h-3.5 inline mr-1"></i>${hero.views || 0}</span>
-                                <span><i data-lucide="heart" class="w-3.5 h-3.5 inline mr-1 text-red-500"></i>${hero.likes || 0}</span>
-                            </div>
-                            <span class="text-red-500 font-bold group-hover:translate-x-1 transition flex items-center">Číst více <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i></span>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Grid items
-            articlesGrid.innerHTML = remaining.map(article => `
-                <div onclick="openArticle('${article.id}')" class="group cursor-pointer bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden flex flex-col justify-between hover:border-neutral-700 transition">
-                    <div>
-                        <div class="relative h-48 overflow-hidden bg-black">
-                            <img src="${article.imageUrl || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=800&q=80'}" alt="${article.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90">
-                            <span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold uppercase px-2 py-0.5 rounded">${article.category}</span>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center text-[11px] text-neutral-400 space-x-2 mb-2">
-                                <span><i data-lucide="clock" class="w-3 h-3 inline mr-1 text-red-500"></i>${formatDate(article.timestamp)}</span>
-                            </div>
-                            <h4 class="font-heading text-lg font-bold text-white group-hover:text-red-500 transition mb-2 leading-snug line-clamp-2">${article.title}</h4>
-                            <p class="text-neutral-400 text-xs line-clamp-2">${article.subtitle || article.content}</p>
-                        </div>
-                    </div>
-                    <div class="px-5 py-3 bg-neutral-950/50 border-t border-neutral-800/80 flex items-center justify-between text-xs text-neutral-500">
-                        <div class="flex space-x-3">
-                            <span><i data-lucide="eye" class="w-3.5 h-3.5 inline mr-1"></i>${article.views || 0}</span>
-                            <span><i data-lucide="heart" class="w-3.5 h-3.5 inline mr-1 text-red-500"></i>${article.likes || 0}</span>
-                        </div>
-                        <span class="text-neutral-400 group-hover:text-white transition flex items-center text-[11px] font-semibold">Číst <i data-lucide="arrow-right" class="w-3 h-3 ml-1"></i></span>
-                    </div>
-                </div>
-            `).join('');
+        function resetFilter() {
+            activeCategory = 'VŠECHNO';
+            searchQuery = '';
+            document.getElementById('search-input').value = '';
+            closeDetail();
+            renderApp();
         }
 
-        function formatDate(ts) {
-            if (!ts) return 'Neznámé datum';
-            const date = new Date(ts);
-            return date.toLocaleDateString('cs-CZ', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        function handleSearch() {
+            searchQuery = document.getElementById('search-input').value;
+            closeDetail();
+            renderApp();
         }
 
         function openArticle(id) {
@@ -537,55 +547,31 @@
             if (!article) return;
 
             currentArticleId = id;
-            
-            // Increment views
             article.views = (article.views || 0) + 1;
             saveToLocalStorage();
 
-            // Populate Detail View
-            document.getElementById('detail-title').innerText = article.title;
-            
-            const subtitleEl = document.getElementById('detail-subtitle');
-            const subtitleContainer = document.getElementById('detail-subtitle-container');
-            if (article.subtitle) {
-                subtitleEl.innerText = article.subtitle;
-                subtitleContainer.classList.remove('hidden');
-            } else {
-                subtitleContainer.classList.add('hidden');
-            }
-
-            document.getElementById('detail-category').innerText = article.category;
+            document.getElementById('detail-title').innerText = article.title || 'Bez názvu';
+            document.getElementById('detail-subtitle').innerText = article.subtitle || '';
+            document.getElementById('detail-category').innerText = article.category || 'ZPRÁVY';
             document.getElementById('detail-author').innerText = article.author || 'Redakce WEAZEL NEWS';
-            document.getElementById('detail-date').innerText = formatDate(article.timestamp);
-            document.getElementById('detail-views').innerText = `${article.views} zobrazení`;
+            document.getElementById('detail-date').innerText = new Date(article.timestamp || Date.now()).toLocaleString('cs-CZ');
+            document.getElementById('detail-views').innerText = `${article.views || 0} zobrazení`;
             document.getElementById('detail-likes').innerText = `${article.likes || 0} lajků`;
-            document.getElementById('detail-content').innerText = article.content;
+            document.getElementById('detail-content').innerText = article.content || '';
 
-            // Media Container Setup (Video vs Image)
             const mediaContainer = document.getElementById('detail-media-container');
             if (article.videoUrl) {
-                let videoHtml = '';
-                if (article.videoUrl.includes('youtube.com') || article.videoUrl.includes('youtu.be')) {
-                    let embedUrl = article.videoUrl;
-                    if (article.videoUrl.includes('watch?v=')) {
-                        embedUrl = article.videoUrl.replace('watch?v=', 'embed/');
-                    } else if (article.videoUrl.includes('youtu.be/')) {
-                        embedUrl = article.videoUrl.replace('youtu.be/', 'www.youtube.com/embed/');
-                    }
-                    videoHtml = `<div class="aspect-video w-full"><iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allowfullscreen></iframe></div>`;
-                } else {
-                    videoHtml = `<video src="${article.videoUrl}" controls class="w-full max-h-[500px] object-contain"></video>`;
-                }
-                mediaContainer.innerHTML = videoHtml;
-                mediaContainer.classList.remove('hidden');
+                mediaContainer.innerHTML = renderVideoPlayer(article.videoUrl);
             } else if (article.imageUrl) {
-                mediaContainer.innerHTML = `<img src="${article.imageUrl}" alt="${article.title}" class="w-full max-h-[500px] object-cover">`;
-                mediaContainer.classList.remove('hidden');
+                mediaContainer.innerHTML = `
+                    <div class="max-h-[500px] overflow-hidden border border-neutral-800">
+                        <img src="${article.imageUrl}" class="w-full h-full object-cover" />
+                    </div>
+                `;
             } else {
-                mediaContainer.classList.add('hidden');
+                mediaContainer.innerHTML = '';
             }
 
-            // Admin Actions visibility
             const deleteBtn = document.getElementById('detail-delete-btn');
             if (isAdmin) {
                 deleteBtn.classList.remove('hidden');
@@ -593,12 +579,11 @@
                 deleteBtn.classList.add('hidden');
             }
 
-            // Like Button State
             const likeBtn = document.getElementById('like-btn');
             const likeText = document.getElementById('like-btn-text');
             if (likedInSession.has(id)) {
                 likeBtn.className = "flex items-center space-x-2 px-6 py-3 font-bold uppercase text-sm transition bg-neutral-800 text-green-400 border border-green-500/30 cursor-not-allowed font-heading";
-                likeText.innerText = "Lajkováno!";
+                likeText.innerText = "Lajkováno";
             } else {
                 likeBtn.className = "flex items-center space-x-2 px-6 py-3 font-bold uppercase text-sm transition bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-red-900/40 font-heading";
                 likeText.innerText = "Páčí sa mi to";
@@ -607,7 +592,6 @@
             document.getElementById('articles-view').classList.add('hidden');
             document.getElementById('detail-view').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-
             if (window.lucide) lucide.createIcons();
         }
 
@@ -624,44 +608,29 @@
                 article.likes = (article.likes || 0) + 1;
                 likedInSession.add(currentArticleId);
                 saveToLocalStorage();
-                document.getElementById('detail-likes').innerText = `${article.likes} lajků`;
                 
+                document.getElementById('detail-likes').innerText = `${article.likes} lajků`;
                 const likeBtn = document.getElementById('like-btn');
                 const likeText = document.getElementById('like-btn-text');
                 likeBtn.className = "flex items-center space-x-2 px-6 py-3 font-bold uppercase text-sm transition bg-neutral-800 text-green-400 border border-green-500/30 cursor-not-allowed font-heading";
-                likeText.innerText = "Lajkováno!";
-                renderApp();
-            }
-        }
-
-        function deleteCurrentArticle() {
-            if (!currentArticleId) return;
-            deleteArticle(currentArticleId);
-            closeDetail();
-        }
-
-        function deleteArticle(id) {
-            if (confirm('Opravdu chcete tento článek smazat?')) {
-                currentArticles = currentArticles.filter(a => a.id !== id);
-                saveToLocalStorage();
-                renderApp();
+                likeText.innerText = "Lajkováno";
             }
         }
 
         function openAdminModal() {
-            document.getElementById('admin-error').classList.add('hidden');
-            document.getElementById('admin-password-input').value = '';
             document.getElementById('admin-modal').classList.remove('hidden');
         }
 
         function closeAdminModal() {
             document.getElementById('admin-modal').classList.add('hidden');
+            document.getElementById('admin-error').classList.add('hidden');
+            document.getElementById('admin-password-input').value = '';
         }
 
         function handleAdminLogin(e) {
             e.preventDefault();
-            const input = document.getElementById('admin-password-input').value;
-            if (input === ADMIN_PASS) {
+            const pass = document.getElementById('admin-password-input').value;
+            if (pass === ADMIN_PASS) {
                 isAdmin = true;
                 updateAdminUI();
                 closeAdminModal();
@@ -676,35 +645,32 @@
         }
 
         function updateAdminUI() {
+            const statusText = document.getElementById('admin-status-text');
+            const lockIcon = document.getElementById('admin-lock-icon');
             const logoutBtn = document.getElementById('admin-logout-btn');
             const createBtn = document.getElementById('create-article-btn');
-            const lockIcon = document.getElementById('admin-lock-icon');
-            const statusText = document.getElementById('admin-status-text');
 
             if (isAdmin) {
                 statusText.innerText = 'ADMIN PŘIHLÁŠEN';
+                statusText.classList.add('text-green-400');
                 lockIcon.setAttribute('data-lucide', 'unlock');
                 logoutBtn.classList.remove('hidden');
                 createBtn.classList.remove('hidden');
                 createBtn.classList.add('flex');
             } else {
                 statusText.innerText = 'ADMIN PŘIHLÁŠENÍ';
+                statusText.classList.remove('text-green-400');
                 lockIcon.setAttribute('data-lucide', 'lock');
                 logoutBtn.classList.add('hidden');
                 createBtn.classList.add('hidden');
                 createBtn.classList.remove('flex');
             }
-
-            if (currentArticleId) {
-                const deleteBtn = document.getElementById('detail-delete-btn');
-                if (isAdmin) deleteBtn.classList.remove('hidden');
-                else deleteBtn.classList.add('hidden');
-            }
-
+            if (window.lucide) lucide.createIcons();
             renderApp();
         }
 
         function openCreateModal() {
+            if (!isAdmin) return;
             document.getElementById('create-modal').classList.remove('hidden');
         }
 
@@ -721,7 +687,7 @@
             const videoUrl = document.getElementById('form-video').value;
             const content = document.getElementById('form-content').value;
 
-            const newArticle = {
+            const newArt = {
                 id: Date.now().toString(),
                 title,
                 category,
@@ -735,16 +701,39 @@
                 likes: 0
             };
 
-            currentArticles.unshift(newArticle);
+            currentArticles.unshift(newArt);
             saveToLocalStorage();
             closeCreateModal();
             
-            // Reset formuláře
-            e.target.reset();
+            // Vyčištění formuláře
+            document.getElementById('form-title').value = '';
+            document.getElementById('form-subtitle').value = '';
+            document.getElementById('form-image').value = '';
+            document.getElementById('form-video').value = '';
+            document.getElementById('form-content').value = '';
+
             renderApp();
         }
 
-        // Inicializace při načtení stránky
+        function deleteArticle(id) {
+            if (!isAdmin) return;
+            if (confirm('Opravdu chcete smazat tento článek?')) {
+                currentArticles = currentArticles.filter(a => a.id !== id);
+                saveToLocalStorage();
+                if (currentArticleId === id) {
+                    closeDetail();
+                }
+                renderApp();
+            }
+        }
+
+        function deleteCurrentArticle() {
+            if (currentArticleId) {
+                deleteArticle(currentArticleId);
+            }
+        }
+
+        // Inicializace aplikace
         document.getElementById('year').innerText = new Date().getFullYear();
         loadFromLocalStorage();
     </script>
